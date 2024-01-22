@@ -10,10 +10,12 @@
 
 ```sh
 cd jalias
-make zsh_install
+. ./scripts/install.sh
 ```
 
 ## 用法
+
+![doc](./doc/jalices.gif)
 
 * add / + : 给当前目录一个别名 `jalias + proj`
 * del / - : 删除别名 `jalias - proj`
