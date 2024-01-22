@@ -31,14 +31,6 @@ _jalias_completions() {
 complete -F _jalias_completions -o nospace jalias
 
 function jalias() {
-    # `jalias proj` such as `jalias cd proj`
-    # if [ $# -eq 1 ]; then
-    #     output="$(_jalias "$@")"
-    #     eval "cd $output"
-    # else
-
-    # fi
-
     common=$1
     shift
     case "${common}" in
@@ -55,6 +47,7 @@ function jalias() {
         _jalias "__JAliasClean"
         ;;
     *)
+        # `jalias proj` such as `jalias cd proj`
         output=""
         if [ $# -eq 0 ]; then
             pp=$common
