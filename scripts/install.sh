@@ -1,36 +1,34 @@
 #!/bin/bash
 
+# shellcheck source=/dev/null
+source "$(pwd)/scripts/env.sh"
+
 # rename _jalias
 os=$(uname -s | awk '{print tolower($0)}')
 arch=$(uname -m | awk '{print tolower($0)}')
 if [ -f "$(pwd)/bin/_jalias_${os}_${arch}" ]; then
-    mv "$(pwd)/bin/_jalias_${os}_${arch}" "$(pwd)/bin/_jalias"
+    cp "$(pwd)/bin/_jalias_${os}_${arch}" "$(pwd)/bin/_jalias"
 fi
 
-# sh_type=""
-rc_file=""
+# register env
+rc_file="$(shell_rc_file)"
+check_and_set_env JAliasStorePath ~/.jalias "$rc_file"
+check_and_set_env JAliasSrc "$(pwd)" "$rc_file"
+check_and_set_env JAliasBin "$(pwd)/bin" "$rc_file"
 
-case $SHELL in
-*bash*)
-    # sh_type="bash"
-    rc_file=~/.bashrc
-    ;;
-*zsh*)
-    # sh_type="zsh"
-    rc_file=~/.zshrc
-    ;;
-*)
-    echo "Unsupported shell types"
-    ;;
-esac
+# register alias for jalias
+check=$(alias j)
+if [ -n "$check" ]; then
+    echo "command \"j\" exists on system"
+else
+    echo "alias j=jalias" >>"$rc_file"
+fi
 
-{
-    echo "export JAliasStorePath=~/.jalias"
-    echo "export JAliasSrc=$(pwd)"
-    echo "export JAliasBin=$(pwd)/bin"
-    echo "source $(pwd)/scripts/jalias.sh"
-} >>"$rc_file"
+# shellcheck disable=SC2154
+check=$(grep "source $(pwd)/scripts/jalias.sh" "$rc_file")
+if [ -z "$check" ]; then
+    echo "source $(pwd)/scripts/jalias.sh" >>"$rc_file"
+fi
 
 # shellcheck disable=SC1090
 source "$rc_file"
-
